@@ -1,28 +1,17 @@
-import asyncio
-import time
-from datetime import datetime
+import newspaper
 
 
-async def custom_sleep():
-    print('SLEEP', datetime.now())
-    time.sleep(1)
+def run1():
+    c = newspaper.build('https://www.cbs.com/')
+    for article in c.articles:
+        print(article.url)
 
 
-async def factorial(name, number):
-    f = 1
-    for i in range(2, number+1):
-        print('Task {}: Compute factorial({})'.format(name, i))
-        await custom_sleep()
-        f *= i
-    print('Task {}: factorial({}) is {}\n'.format(name, number, f))
+def run2():
+    c = newspaper.build('https://www.cancilleria.gob.ar/es/actualidad/noticias', memoize_articles=False)
+    for article in c.articles:
+        print(article.url)
 
-start = time.time()
-loop = asyncio.get_event_loop()
-tasks = [
-    asyncio.ensure_future(factorial("A", 3)),
-    asyncio.ensure_future(factorial("B", 4)),
-]
-loop.run_until_complete(asyncio.wait(tasks))
-loop.close()
-end = time.time()
-print("Total time: {}".format(end - start))
+
+if __name__ == '__main__':
+    run2()
