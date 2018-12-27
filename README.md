@@ -1,9 +1,11 @@
-# Article Dog
+# Article Doge
 
-By using newspaper3k library, this program should -is on progress- take a bunch of article webs given by the user to display it. 
+## Description
 
-# What Im learning
+This programs lets you add your favourites article sources and sort them all together to see them nicely.
+Save interesting articles and edit the article source list.
 
-Using PyQt5 Signals, Threads.
-As for newspaper3k... is pretty magical as the way to use: give url, and ask for the data.
-I also want to achieve a nice UI, but thats for later.
+## What Im learning
+
+PyQt5 for UI
+newspaper3k web article data getter.
