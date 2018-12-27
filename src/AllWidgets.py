@@ -1,130 +1,131 @@
+# ------------------------------------------------PyQt5 imports
 from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtGui import QPalette, QColor, QIcon, QPixmap
-from PyQt5.QtWidgets import QAction, QVBoxLayout, QToolBar, QLabel, \
-    QGridLayout, QWidget, QSpacerItem, QSizePolicy
+from PyQt5.QtGui import QPalette, QColor, QIcon
+from PyQt5.QtWidgets import QAction, QVBoxLayout,\
+    QToolBar, QLabel, QGridLayout, QWidget
+# ------------------------------------------------Other Imports
 import ArticleController
+# -------------------------------------------------------------
+# TODO put actions of layout elem in mainController, not here
+# TODO favourites menu
+# TODO sourcesEdit menu
+# TODO settings menu
+# TODO clean code (not priority)
 
 
-def getMenuToolbar(window):
-    toolbar = QToolBar()
+# ===============================================
+# Toolbar
+# ===============================================
+class Toolbar(QToolBar):
 
-    # --------------
-    # Toolbar setup
-    # --------------
-    toolbar.setMovable(False)
-    toolbar.setOrientation(Qt.Vertical)
-    toolbar.setPalette(QPalette(QColor(30, 30, 30)))
-    toolbar.setToolButtonStyle(Qt.ToolButtonIconOnly)
-    toolbar.setIconSize(QSize(64, 64))
+    def __init__(self, window):
+        super().__init__()
 
-    # ----------------------------------
-    # Actions setup
-    # ----------------------------------
+        # --------------
+        # Toolbar setup
+        # --------------
+        self.setMovable(False)
+        self.setOrientation(Qt.Vertical)
+        self.setPalette(QPalette(QColor(30, 30, 30)))
+        self.setToolButtonStyle(Qt.ToolButtonIconOnly)
+        self.setIconSize(QSize(64, 64))
 
-    # QAction(QIcon(. / path / to / file),
-    #         name_string, parent=None)
+        # ----------------------------------
+        # Actions setup
+        # ----------------------------------
 
-    # home action
-    home_act = QAction(QIcon("./assets/icons/home.png"),
-                       "home", window)
-    home_act.triggered.connect(window.change_widget)
+        # QAction(QIcon(. / path / to / file),
+        #         name_string, parent=None)
+        self.home_act = QAction(QIcon("./assets/icons/home.png"),
+                                "home", window)
+        self.fav_act = QAction(QIcon("./assets/icons/favourites.png"),
+                               "fav", window)
+        self.src_act = QAction(QIcon("./assets/icons/edit.png"),
+                               "src", window)
+        self.sett_act = QAction(QIcon("./assets/icons/settings.png"),
+                                "sett", window)
+        self.exit_act = QAction(QIcon("./assets/icons/exit.png"),
+                                "exit", window)
 
-    # favourites action
-    fav_act = QAction(QIcon("./assets/icons/favourites.png"),
-                      "fav", window)
-    fav_act.triggered.connect(window.change_widget)
-
-    # sources action
-    src_act = QAction(QIcon("./assets/icons/edit.png"),
-                      "src", window)
-    src_act.triggered.connect(window.change_widget)
-
-    # settings action
-    sett_act = QAction(QIcon("./assets/icons/settings.png"),
-                       "sett", window)
-    sett_act.triggered.connect(window.change_widget)
-
-    # exit action
-    exit_act = QAction(QIcon("./assets/icons/exit.png"),
-                       "exit", window)
-    exit_act.triggered.connect(window.close)
-
-    # ---------------
-    # add to toolbar
-    # ---------------
-    toolbar.addAction(home_act)
-    toolbar.addAction(fav_act)
-    toolbar.addAction(src_act)
-    toolbar.addAction(sett_act)
-    toolbar.addAction(exit_act)
-
-    return toolbar
+        # ----------------------
+        # add actions to toolbar
+        # ----------------------
+        self.addAction(self.home_act)
+        self.addAction(self.fav_act)
+        self.addAction(self.src_act)
+        self.addAction(self.sett_act)
+        self.addAction(self.exit_act)
 
 
-def getHome():
-    widget = QWidget()
-    widget.setObjectName("home")
-    layout = QGridLayout()
-
-    # articles = ArticleController.get_article_from_source("xd")
-    #
-    # article_cards = []
-    #
-    # from ArticleWidgets import ArticleGridCard
-    #
-    # for article in articles:
-    #     article_cards.append(ArticleGridCard())
-
-    # # BEGIN test
-    i = 0
-    while i < 112:
-        for j in range(0, 10):
-            label = QLabel("test_label\n number\n   " + str(i))
-            # layout.addWidget(label, i, j)
-        i += 1
-    test_label = QLabel("This is a test from HOME")
-
-    layout.addWidget(test_label)
-    # # END test
-
-    widget.setLayout(layout)
-    return widget
+# ===============================================
+# Home Widget
+# ===============================================
+from ArticleWidgets import ArticleGridCard
 
 
-def getFavourites():
-    widget = QWidget()
-    widget.setObjectName("fav")
-    layout = QVBoxLayout()
+class HomeWidget(QWidget):
+    def __init__(self, width_limit, is_first_time):
+        super().__init__()
+        self.setObjectName("home")
 
-    test_label = QLabel("This is a test from FAVOURITES")
+        layout = QGridLayout()
 
-    layout.addWidget(test_label)
+        articles_data = ArticleController.get_article_data()
 
-    widget.setLayout(layout)
-    return widget
+        for article in articles_data:
+            layout.addWidget(ArticleGridCard(QSize(100, 100),
+                                             article.images,
+                                             article.title,
+                                             article.summary,
+                                             article.publish_date))
 
-
-def getSources():
-    widget = QWidget()
-    widget.setObjectName("src")
-    layout = QVBoxLayout()
-
-    test_label = QLabel("This is a test from EDIT SOURCES")
-
-    layout.addWidget(test_label)
-
-    widget.setLayout(layout)
-    return widget
+        self.setLayout(layout)
 
 
-def getSettings():
-    widget = QWidget()
-    widget.setObjectName("sett")
-    layout = QVBoxLayout()
+# ===============================================
+# Favourites Widget
+# ===============================================
+class FavouritesWidget(QWidget):
+    def __init__(self):
+        super().__init__()
+        widget = QWidget()
+        widget.setObjectName("fav")
+        layout = QVBoxLayout()
 
-    test_label = QLabel("This is a test from SETTINGS")
+        test_label = QLabel("This is a test from FAVOURITES")
 
-    layout.addWidget(test_label)
+        layout.addWidget(test_label)
 
-    widget.setLayout(layout)
-    return widget
+        widget.setLayout(layout)
+
+
+# ===============================================
+# Sources Widget
+# ===============================================
+class SourcesWidget(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setObjectName("src")
+        layout = QVBoxLayout()
+
+        test_label = QLabel("This is a test from EDIT SOURCES")
+
+        layout.addWidget(test_label)
+
+        self.setLayout(layout)
+
+
+# ===============================================
+# Settings Widget
+# ===============================================
+class SettingsWidget(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setObjectName("sett")
+        layout = QVBoxLayout()
+
+        test_label = QLabel("This is a test from SETTINGS")
+
+        layout.addWidget(test_label)
+
+        self.setLayout(layout)

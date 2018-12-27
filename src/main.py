@@ -1,22 +1,25 @@
-# Python3 imports
+# ----------------- Python3 imports
 import sys
 
-# PyQt5 imports
+# ----------------- PyQt5 imports
 from PyQt5.QtCore import Qt, QObject
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, \
-    QHBoxLayout, QScrollArea, QGridLayout, QLabel, \
-    QWidget, QDialog, QMessageBox
+    QScrollArea, QMessageBox
 
-# Other imports
+# ----------------- Other imports
 import AllWidgets
+from DataController import PersistentData
 
-"""
+"""==============================================
 main
 @description : execution starts here, sets the 
                application and initializes a win-
                dow.
-"""
-# NOTODO
+=============================================="""
+# TODO *1
+# TODO (from ArticleWidgets) put actions of layout elem here
+# TODO modularize main.py (not priority)
 
 
 # ===============================================
@@ -27,7 +30,12 @@ class Window(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setGeometry(50, 50, 600, 400)
+        db_controller = PersistentData()
+
+        self.setWindowIcon(QIcon("./assets/icons/app.png"))
+        self.setWindowTitle("Article Doge")
+        self.move(50, 50)
+        self.setFixedSize(800, 600)
 
         self.init_UI()
 
@@ -35,60 +43,84 @@ class Window(QMainWindow):
     # UI setup
     # -------------------------------------------
     def init_UI(self):
-        toolbar = AllWidgets.getMenuToolbar(self)
-        home_widget = AllWidgets.getHome()
+        self.main_area = QScrollArea()
+        print("further widgets will limited to: " + str(self.main_area.width()))
 
-        main_area = QScrollArea()
-        main_area_layout = QGridLayout()
-        main_area.setLayout(main_area_layout)
-
-        main_area_layout.addWidget(home_widget)
+        toolbar = AllWidgets.Toolbar(self)
+        home_widget = AllWidgets.HomeWidget(self.main_area.width(),
+                                            is_first_time=True)
+        self.main_area.setWidget(home_widget)
 
         self.addToolBar(Qt.LeftToolBarArea, toolbar)
-        self.setCentralWidget(main_area)
+        self.setCentralWidget(self.main_area)
 
         self.show()
 
     # -------------------------------------------
-    # Close confirmation dialog
+    # Changes window central widget, home, favou-
+    # rites, sources or settings.
     #
-    # @description : this a slot for the toolbar
-    #                actions.
+    # Creates a new instance of the object and
+    # gives every layout elem their action.
     # -------------------------------------------
     def change_widget(self):
         widget_name = QObject.sender(self).text()
-        if widget_name is self.centralWidget().objectName():
-            print("widget is current, bye")
+        current_widget = self.centralWidget().widget().objectName()
+        print("widget_name: [" + widget_name +
+              "] and current widget: [" + current_widget + "]")
+        if widget_name == current_widget:
+            print("you already are in " + widget_name)
+            # TODO*1 refresh widget if needed (home article feed)
             return
 
-        print("sender is: [" + str(widget_name) + "]")
+        if widget_name == "home": self._change_to_home_widget()
+        elif widget_name == "fav": self._change_to_favourites_widget()
+        elif widget_name == "src": self._change_to_sources_widget()
+        elif widget_name == "sett": self._change_to_settings_widget()
 
-        if widget_name == "home":
-            home_widget = AllWidgets.getHome()
-            self.setCentralWidget(home_widget)
+    def _change_to_home_widget(self):
+        home_widget = AllWidgets.HomeWidget(self.main_area.width(),
+                                            is_first_time=False)
 
-        elif widget_name == "fav":
-            print("clicked on fav, so changing to fav widget")
-            favourites_widget = AllWidgets.getFavourites()
-            self.setCentralWidget(favourites_widget)
+        for article_card in home_widget.article_cards:
+            article_card.clicked.connect(self.show_article)
 
-        elif widget_name == "src":
-            sources_widget = AllWidgets.getSources()
-            self.setCentralWidget(sources_widget)
+        self.main_area.setWidget(home_widget)
 
-        elif widget_name == "sett":
-            settings_widget = AllWidgets.getSettings()
-            self.setCentralWidget(settings_widget)
+    def _change_to_favourites_widget(self):
+        favourites_widget = AllWidgets.FavouritesWidget()
+        self.main_area.setWidget(favourites_widget)
+
+    def _change_to_sources_widget(self):
+        widget = AllWidgets.SourcesWidget()
+
+        for edit_source_widget in widget.edit_source_widgets:
+            pass
+            # TODO
+
+        self.main_area.setWidget(widget)
+
+    def _change_to_settings_widget(self):
+        widget = AllWidgets.SettingsWidget()
+
+        # widget.example_setting...... TODO
+
+        self.main_area.setWidget(widget)
 
     # -------------------------------------------
     # Close confirmation dialog
     # -------------------------------------------
     def closeEvent(self, e):
         e.ignore()
-        if QMessageBox.Yes == QMessageBox.question(self, "QUIT", "Sure?",
-                                                   QMessageBox.Yes |
-                                                   QMessageBox.No):
+        close = QMessageBox.question(self, "Exiting app",
+                                     "Are you sure you want to exit?",
+                                     QMessageBox.Yes |
+                                     QMessageBox.No)
+        if close == QMessageBox.Yes:
             e.accept()
+
+    def __del__(self):
+        print(str(self.objectName()) + " is being destroyed... bye")
 
 
 # ===============================================

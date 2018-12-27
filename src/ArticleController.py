@@ -6,21 +6,28 @@ import newspaper
 #
 # @returns a list of Article object
 # ==============================================
-def get_article_from_source(source):
-    if source is None:
+def get_article_data(sources):
+    # check sources
+    if sources is None:
         return []
+    # check temporary data
+    # TODO if temp data exists, do not fetch from internet
 
-    # demo
-    source = "https://www.cancilleria.gob.ar/es/actualidad/noticias"
+    # TODO get every article from every source and save to temp
+    print("getting articles from source (" + sources + ")")
 
     result = []
+    builds = []
+    for url in sources:
+        build = newspaper.build(sources, memoize_articles=False)
+        for article in build.articles:
 
-    build = newspaper.build(source, memorize_articles=False)
-    for article in build.articles:
-        if str(article.url).startswith(source):
-            result.append(article)
-
-    # for article in result:
-        # print(article.url)
+            # filter some articles that are not articles
+            # for some reason
+            if str(article.url).startswith(sources):
+                article.download()
+                article.parse()
+                print("title=" + str(article.title))
+                result.append(article)
 
     return result
