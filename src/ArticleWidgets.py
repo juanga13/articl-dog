@@ -3,7 +3,7 @@ import urllib
 from PyQt5.QtGui import QPixmap, QImage, QPalette, QBrush
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
 
-""" =============================================
+"""==============================================
 Article Widgets
 @description : has the card widgets, depending on
                the align you want (Grid, List, 

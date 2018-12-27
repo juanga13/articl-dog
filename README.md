@@ -7,5 +7,6 @@ Save interesting articles and edit the article source list.
 
 ## What Im learning
 
-PyQt5 for UI
-newspaper3k web article data getter.
+**PyQt5** for UI.
+**newspaper3k** web article data getter.
+**Google Style Python Docstrings** for documentation.
