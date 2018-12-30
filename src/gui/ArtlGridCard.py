@@ -1,25 +1,21 @@
+"""
+
+"""
+
 import urllib
 
-from PyQt5.QtGui import QPixmap, QImage, QPalette, QBrush
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
+from PyQt5.QtGui import QImage, QPixmap, QPalette, QBrush
 
-"""==============================================
-Article Widgets
-@description : has the card widgets, depending on
-               the align you want (Grid, List, 
-               etc.)    
-=============================================="""
-# TODO finish ArticleListCard (not priority)
+from PyQt5.QtWidgets import QVBoxLayout, QLabel, QWidget
+
+# TODO doc
 
 
-# ===============================================
-# Article Grid Card
-# ===============================================
-class ArticleGridCard(QWidget):
+class ArtlGridCard(QWidget):
+    """
 
-    # -------------------------------------------
-    # Init
-    # -------------------------------------------
+    """
+
     def __init__(self, q_size, photo_path, title, description, date):
         super().__init__()
 
@@ -61,21 +57,3 @@ class ArticleGridCard(QWidget):
 
         self.setLayout(layout)
 
-
-# ===============================================
-# Article List Card
-# ===============================================
-class ArticleListCard(QWidget):
-
-    def __init__(self, q_size, photo, title, description, date, photo_path):
-        super().__init__(photo_path, title, description, date)
-        self.photo = photo
-        self.title = title
-        self.description = description
-        self.date = date
-
-        self.init_ui(q_size)
-
-    def init_ui(self, q_size):
-        # layout =
-        pass

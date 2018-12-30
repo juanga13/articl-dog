@@ -2,14 +2,14 @@
 
 """
 
-import sys
-
 from PyQt5.QtCore import Qt
 
 from PyQt5.QtWidgets import QWidget, QHBoxLayout,\
-    QLineEdit, QApplication, QMainWindow
+    QLineEdit
 
-from AnimatedButton import AnimatedButton
+from gui.AnimatedButton import AnimatedButton
+
+# TODO [IMAGE] set delete button idle, hover and pressed images
 
 
 class EditSourceWidget(QWidget):
@@ -35,7 +35,6 @@ class EditSourceWidget(QWidget):
                                  "./assets/icons/edit.png"]
         self.del_button = AnimatedButton(button_resources_test)
         # ----------------------------------------------- test END
-        # TODO [IMAGE] set delete button idle, hover and pressed images
 
         self.del_button.setFixedWidth(self.url_edit.height())
 

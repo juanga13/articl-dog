@@ -1,13 +1,16 @@
+"""==============================================
+Animated button
+
+@description: changes image when idle, pressed
+              and hovered
+=============================================="""
+
+
 from PyQt5.QtGui import QPainter, QPixmap
+
 from PyQt5.QtWidgets import QPushButton
 
 
-# ===============================================
-# Animated button
-#
-# version 1, changes image when idle, pressed and
-#            hovered
-# ===============================================
 class AnimatedButton(QPushButton):
 
     def __init__(self, resources):
